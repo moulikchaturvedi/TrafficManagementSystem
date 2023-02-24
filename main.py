@@ -50,16 +50,19 @@ def roads_sorting_desc():
 def traffic_light_manager():
     if (roads[0]["incoming_vehicles"] >= 0.66*roads[0]["incoming_vehicles"]):
         roads[0],roads[1] = roads[1], roads[0]
+    for road in roads:
+        if road["timer"] == 3:
+            road, roads[0] = roads[0], road
     roads[0]["green"] = [True, True, True]
     roads[1]["green"] = [True, False, False]
     roads[2]["green"] = [True, False, False]
     roads[3]["green"] = [True, False, False]
 
 def road_state_update():
-    roads[0]["leftlane"], roads[0]["timer"] = random.randint(0, 20), 0
-    roads[1]["leftlane"], roads[1]["timer"] = random.randint(0, 20), roads[1]["timer"]+1
-    roads[2]["leftlane"], roads[2]["timer"] = random.randint(0, 20), roads[2]["timer"]+1
-    roads[3]["leftlane"], roads[3]["timer"] = random.randint(0, 20), roads[3]["timer"]+1
+    roads[0]["leftlane"], roads[0]["timer"], roads[0]["incoming_vehicles"] = random.randint(0, 20), 0, random.randint(0, 15)
+    roads[1]["leftlane"], roads[1]["timer"], roads[1]["incoming_vehicles"]  = random.randint(0, 20), roads[1]["timer"]+1, random.randint(0, 15)
+    roads[2]["leftlane"], roads[2]["timer"], roads[2]["incoming_vehicles"]  = random.randint(0, 20), roads[2]["timer"]+1, random.randint(0, 15)
+    roads[3]["leftlane"], roads[3]["timer"], roads[3]["incoming_vehicles"]  = random.randint(0, 5), roads[3]["timer"]+1, random.randint(0, 15)
 
 if __name__ == '__main__':
     c = 5
@@ -67,7 +70,7 @@ if __name__ == '__main__':
         roads_sorting_desc()
         print("\n\nIteration: \n")
         for road in roads:
-            print("Name of Road: " + road["name"] + " \t\t " + "Cars on Red Light: " + str(road["leftlane"]) + " \t\t " + "Incoming Cars from previous Red Light: " + str(road["incoming_vehicles"]))
+            print("Name of Road: " + road["name"] + " \t\t " + "Cars on Red Light: " + str(road["leftlane"]) + " \t\t " + "Incoming Cars from previous Red Light: " + str(road["incoming_vehicles"]) + " \t\t " + "Timer: " + str(road["timer"]))
         traffic_light_manager()
         if roads[0]["leftlane"] <= car_threshold:
             print("\n Time given to " + roads[0]["name"] + " for green: " + str(t/2) + " minutes")
